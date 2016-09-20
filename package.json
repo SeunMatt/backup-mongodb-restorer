@@ -4,7 +4,7 @@
   "description": "This module will restore backup of mongodb created by backup-mongodb",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,8 @@
   "dependencies": {
     "fs-extra": "^0.30.0",
     "mongodb": "^2.1.18",
-    "mongoose": "~4.4.19",
     "nodemailer": "^2.4.2",
-    "unzip": "^0.1.11",
-    "zip-archiver": "0.0.4"
+    "unzip": "^0.1.11"
   },
   "bugs": {
     "url": "https://github.com/SeunMatt/backup-mongodb-restorer/issues"

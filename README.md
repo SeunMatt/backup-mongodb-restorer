@@ -26,6 +26,11 @@ Installation
 
 >npm install -save backup-mongodb-restorer
 
+Test
+=====
+> run the command $ npm test
+
+
 API Refrence
 ============
 params

@@ -97,7 +97,7 @@ function getAllCollections() {
  // The files are collections from the database in .json format
 
 	fs.readdir(tempPath, function(error, results) {
-		if(error) { console.log("error reading dir from restore " + error); db.close(); return;}
+		if(error) { console.log("error reading dir from restore " + error); db.close(); return false;}
 		else { 
 			console.log("dir read and contains " + results.length + " files");
 			
@@ -135,6 +135,8 @@ function loadJsonData(z) {
 
 			else { console.log("tempPath removed"); }
 		}); 
+
+		return;	
 	}
 
 	else {
