@@ -29,11 +29,13 @@ Installation
 API Refrence
 ============
 params
+
 	* databaseUri [not optional]: the uri to the mongodatabase e.g. mongodb://127.0.0.1:27017/test
 	* zipFilePath [not optional]: path/to/backupfile.zip
 
 method
-	calling new Restore(databaseUri, zipFilePath).restore(); does the job
+
+	* calling new Restore(databaseUri, zipFilePath).restore(); does the job
 
 
 
@@ -46,4 +48,4 @@ added feature(s)
 
 LICENSE
 ========
-[MIT License](backup-mongodb-restorer/LICENSE))
+[MIT License](https://github.com/SeunMatt/backup-mongodb-restorer/blob/master/LICENSE)
