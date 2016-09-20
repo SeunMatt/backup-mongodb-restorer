@@ -4,7 +4,7 @@
   "description": "This module will restore backup of mongodb created by backup-mongodb",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "make test"
   },
   "repository": {
     "type": "git",

@@ -28,6 +28,12 @@ Test
 =====
 > run the command $ npm test
 
+Note:
+ You will need to have [make]() installed on your system to run the test
+ If you want to run on other OS other than windows, you might want to 
+ Open the makefile in the project root dir and then change the path separator in
+ .\node_modules\.bin\mocha
+ 
 
 API Refrence
 ============
