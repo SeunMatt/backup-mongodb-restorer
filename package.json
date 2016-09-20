@@ -1,6 +1,6 @@
 {
   "name": "backup-mongodb-restorer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This module will restore backup of mongodb created by backup-mongodb",
   "main": "index.js",
   "scripts": {
