@@ -1,8 +1,6 @@
 backup-mongodb-restorer
 =======================
 
-version: 1.0.0
-
 This module will restore backup of mongodb created by backup-mongodb.
 You should use this module alongside [backup-mongodb](https://github.com/SeunMatt/backup-mongodb)
 
