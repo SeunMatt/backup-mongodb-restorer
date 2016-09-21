@@ -43,10 +43,17 @@ var db; //global db object
 var zipPath; // path/to/zipfile.zip
 var tempPath = __dirname + "/temp";
 
+var d; //global var for done callback for mocha test
+
+var winston = require("winston");
+
 
 function Restore (dbaseUri, pathToZipFile) {
 
-  if(!dbaseUri || !pathToZipFile) { console.log("invalid params"); return; }
+  if(!dbaseUri || !pathToZipFile) { 
+  	winston.error("incomplete params \ndbaseUri = " + dbaseUri + "\npathToZipFile = " + pathToZipFile); 
+  	throw new Error("incomplete params \ndbaseUri = " + dbaseUri + "\npathToZipFile = " + pathToZipFile);
+  	}
 
 	databaseUri = dbaseUri;
 	zipPath = pathToZipFile;
@@ -54,14 +61,16 @@ function Restore (dbaseUri, pathToZipFile) {
 }
 
 
-Restore.prototype.restore = function() {
+Restore.prototype.restore = function(done) {
+
+	if(done) { d = done; }
 
 	mongoClient.connect(databaseUri, function(error, dbObj) {
 
-		if(error) { console.log("ERROR CONNECTING TO MONGODB " + error); }
+		if(error) { winston.error("ERROR CONNECTING TO MONGODB " + error); }
 		else {
 
-			console.log("Restore Script Connected to MongoDb successfully");
+			winston.info("Restore Script Connected to MongoDb successfully");
 			db = dbObj;
 			
 			// first extract the zip file to tempPath
@@ -76,7 +85,7 @@ function extractZip() {
  	// this is the first thing to be done. It extracts the zip file
  	var unzipExtractor = unzip.Extract({ path: tempPath});
 	unzipExtractor.on("close", function() { 
-	console.log("Extraction Complete . . .");
+	winston.info("Extraction Complete . . .");
 
 	// now invoke getAllCollections to read the dir for the .json files
 	getAllCollections();
@@ -97,9 +106,9 @@ function getAllCollections() {
  // The files are collections from the database in .json format
 
 	fs.readdir(tempPath, function(error, results) {
-		if(error) { console.log("error reading dir from restore " + error); db.close(); return false;}
+		if(error) { winston.error("error reading dir from restore " + error); db.close(); return false;}
 		else { 
-			console.log("dir read and contains " + results.length + " files");
+			winston.info("dir read and contains " + results.length + " files");
 			
 			for(var x in results) {
 
@@ -108,7 +117,7 @@ function getAllCollections() {
 			    }
 
 				if(x == results.length - 1) { 
-					console.log("fileNames = " + fileNames);
+					winston.info("fileNames = " + fileNames);
 					loadJsonData(0);
 				}
 			}
@@ -128,27 +137,31 @@ function loadJsonData(z) {
 	// after completing a file, it will progress to another file
 
 	if(z > fileNames.length - 1) { 
-		console.log("Restoration procedure complete..."); 
+		winston.info("Restoration procedure complete..."); 
 		db.close();
 		fs.remove(tempPath, function(error){
-			if(error) { console.log("error removing temporary path " + error); }
+			if(error) { 
+				winston.error("error removing temporary path " + error); 
+				if(d) d();
+			}
 
-			else { console.log("tempPath removed"); }
+			else { 
+				winston.verbose("tempPath removed");
+				if(d) d();
+				 }
 		}); 
-
-		return;	
 	}
 
 	else {
 
-		console.log("\nload json data invoked " + z);
+		winston.debug("\nload json data invoked " + z);
 
 		var collectionName = fileNames[z];
 
-		console.log("collection under processing = " + collectionName + "\n");
+		winston.info("collection under processing = " + collectionName + "\n");
 
 		fs.readJson(tempPath + "/" + collectionName + ".json", function(error, fileData) {
-			if(error) { console.log("error reading file in Restore " + fileNames[z] + ": " + error); db.close(); return; }
+			if(error) { winston.error("error reading file in Restore " + fileNames[z] + ": " + error); db.close(); return; }
 			else {
 				// function callback () { loadJsonData(z + 1); }
 				saveToDb( fileData, 0, collectionName, function() { loadJsonData(z + 1) });
@@ -167,21 +180,21 @@ function saveToDb(fileData, x, collectionName, callback) {
 	//if the record exits it will update it else it will just create it
 	//once it's done it will call loadJsonData to load another file for processing
 
- if(x > fileData.length - 1) { console.log("Done Processing " + collectionName + "\n"); callback(); }
+ if(x > fileData.length - 1) { winston.info("Done Processing " + collectionName + "\n"); callback(); }
   
   else {
 
-	console.log("fileData length = " + fileData.length);
+	winston.verbose("fileData length = " + fileData.length);
 	var collection = fileData[x];
 	
 	// add this data to the database
 	db.collection(collectionName).update({"_id":collection._id}, collection, {upsert: true}, function(error, result){
     
-    if(error) { console.log("error updating document " + fileName + " : " + error); }
+    if(error) { winston.error("error updating document " + fileName + " : " + error); }
 	
 	else { 
 		
-		console.log("update successful " + result); 
+		winston.verbose("update successful " + result); 
 		saveToDb(fileData, (x + 1), collectionName, callback);
 	    
 	    }

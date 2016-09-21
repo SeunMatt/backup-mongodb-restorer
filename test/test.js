@@ -10,11 +10,11 @@ var Restore = require("../index");
 
 describe("restore", function() {
   
-  it("resotres the sample backupfile dev_19_9_16.21.40.28.zip into test db", function() {
+  it("resotres the sample backupfile dev_19_9_16.21.40.28.zip into test db", function(done) {
 
   	var restore = new Restore(databaseUri, zipFilePath);
 
-    expect( function() { restore.restore(); } ).to.not.throw(Error);
+    expect( function() { restore.restore(done); } ).to.not.throw(Error);
     
   });
 
