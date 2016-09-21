@@ -12,11 +12,18 @@ Usage Example
 
 var databaseUri = "mongodb://127.0.0.1:27017/dev";
 
+//example dbUri with username and password for the database test
+// var dbUri = "mongodb://username:pwd@127.0.0.1:27017/test";
+
+
 var zipFilePath = "backup/dev_19_9_16.21.40.28.zip";
 
 var Restore = require("backup-mongodb-restorer");
 
 new Restore (databaseUri, zipFilePath).restore();
+
+//optionally you can call new Restore (databaseUri, zipFilePath).restore(done);
+//where done is the callback to be called when done
 
 ~~~
 
