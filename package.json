@@ -19,10 +19,11 @@
   "author": "Seun Matt <smatt382@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "fs-extra": "^0.30.0",
-    "mongodb": "^2.1.18",
-    "nodemailer": "^2.4.2",
-    "unzip": "^0.1.11"
+    "fs-extra": "0.30.0",
+    "mongodb": "2.1.18",
+    "nodemailer": "2.4.2",
+    "unzip": "0.1.11",
+    "winston": "2.2.0"
   },
   "bugs": {
     "url": "https://github.com/SeunMatt/backup-mongodb-restorer/issues"
