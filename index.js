@@ -46,13 +46,21 @@ var tempPath = __dirname + "/temp";
 var d; //global var for done callback for mocha test
 
 var winston = require("winston");
+var ObjectID = require("mongodb").ObjectID;
 
+//this boolean value will determine if the database utilizes the ObjectID class of mongodb
+var isObjectID = true;
 
-function Restore (dbaseUri, pathToZipFile) {
+function Restore (dbaseUri, pathToZipFile, useObjectID) {
 
   if(!dbaseUri || !pathToZipFile) { 
   	winston.error("incomplete params \ndbaseUri = " + dbaseUri + "\npathToZipFile = " + pathToZipFile); 
   	throw new Error("incomplete params \ndbaseUri = " + dbaseUri + "\npathToZipFile = " + pathToZipFile);
+  	if(d) d();
+  	}
+
+  	if(useObjectID) {
+  		isObjectID = useObjectID;
   	}
 
 	databaseUri = dbaseUri;
@@ -63,11 +71,15 @@ function Restore (dbaseUri, pathToZipFile) {
 
 Restore.prototype.restore = function(done) {
 
-	if(done) { d = done; }
+	 d = done;
 
 	mongoClient.connect(databaseUri, function(error, dbObj) {
 
-		if(error) { winston.error("ERROR CONNECTING TO MONGODB " + error); }
+		if(error) { 
+			winston.error("ERROR CONNECTING TO MONGODB " + error);
+			if(d) d();
+			return;
+		}
 		else {
 
 			winston.info("Restore Script Connected to MongoDb successfully");
@@ -78,7 +90,7 @@ Restore.prototype.restore = function(done) {
 		}
 
 	});
-}
+ }
 
 
 function extractZip() {
@@ -106,7 +118,12 @@ function getAllCollections() {
  // The files are collections from the database in .json format
 
 	fs.readdir(tempPath, function(error, results) {
-		if(error) { winston.error("error reading dir from restore " + error); db.close(); return false;}
+		if(error) { 
+			winston.error("error reading dir from restore " + error); 
+			db.close();
+			if(d) d(); 
+			return;
+		}
 		else { 
 			winston.info("dir read and contains " + results.length + " files");
 			
@@ -161,7 +178,11 @@ function loadJsonData(z) {
 		winston.info("collection under processing = " + collectionName + "\n");
 
 		fs.readJson(tempPath + "/" + collectionName + ".json", function(error, fileData) {
-			if(error) { winston.error("error reading file in Restore " + fileNames[z] + ": " + error); db.close(); return; }
+			if(error) { 
+					winston.error("error reading file in Restore " + fileNames[z] + ": " + error); 
+					db.close(); 
+					if(d) d(); 
+					return; }
 			else {
 				// function callback () { loadJsonData(z + 1); }
 				saveToDb( fileData, 0, collectionName, function() { loadJsonData(z + 1) });
@@ -188,11 +209,20 @@ function saveToDb(fileData, x, collectionName, callback) {
 	var collection = fileData[x];
 	
 	// add this data to the database
+
+	//change the ID to ObjectID
+	//if the isObjectID variable is true
+	if(isObjectID) {	
+		collection._id = new ObjectID.createFromHexString(collection._id);
+	 }	
+	
 	db.collection(collectionName).update({"_id":collection._id}, collection, {upsert: true}, function(error, result){
     
-    if(error) { winston.error("error updating document " + fileName + " : " + error); }
-	
-	else { 
+    if(error) { 
+    	winston.error("error updating document " + collectionName + " : " + error);
+    	if(d) d(); 
+
+    }  else { 
 		
 		winston.verbose("update successful " + result); 
 		saveToDb(fileData, (x + 1), collectionName, callback);

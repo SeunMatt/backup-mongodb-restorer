@@ -1,29 +1,30 @@
 {
   "name": "backup-mongodb-restorer",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "This module will restore backup of mongodb created by backup-mongodb",
   "main": "index.js",
   "scripts": {
-    "test": "make test"
+    "test": "node ./test/test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SeunMatt/backup-mongodb-restorer.git"
   },
   "keywords": [
+    "backup mongodb",
+    "restore mongodb",
+    "restore",
     "backup",
     "mongodb",
-    "restore",
-    "restorer"
+    "backup-mongodb-restorer"
   ],
   "author": "Seun Matt <smatt382@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "fs-extra": "0.30.0",
+    "fs-extra": "1.0.0",
     "mongodb": "2.1.18",
-    "nodemailer": "2.4.2",
     "unzip": "0.1.11",
-    "winston": "2.2.0"
+    "winston": "2.3.0"
   },
   "bugs": {
     "url": "https://github.com/SeunMatt/backup-mongodb-restorer/issues"
