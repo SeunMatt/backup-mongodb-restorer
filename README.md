@@ -5,8 +5,6 @@ backup-mongodb-restorer
 
 [![https://nodei.co/npm/backup-mongodb-restorer.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/backup-mongodb-restorer.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/backup-mongodb-restorer)
 
-[![HitCount](https://hitt.herokuapp.com/SeunMatt/backup-mongodb-restorer.svg)](https://github.com/SeunMatt/backup-mongodb-restorer)
-
 
 This module will restore backup of mongodb in .zip created by [backup-mongodb](https://github.com/SeunMatt/backup-mongodb).
 
