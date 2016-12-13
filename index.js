@@ -59,9 +59,10 @@ function Restore (dbaseUri, pathToZipFile, useObjectID) {
   	if(d) d();
   	}
 
-  	if(useObjectID) {
-  		isObjectID = useObjectID;
-  	}
+isObjectID = useObjectID;
+
+
+  	winston.error("isObjectID = "  + isObjectID + " useObjectID = " + useObjectID);
 
 	databaseUri = dbaseUri;
 	zipPath = pathToZipFile;
@@ -215,7 +216,17 @@ function saveToDb(fileData, x, collectionName, callback) {
 	if(isObjectID) {	
 		collection._id = new ObjectID.createFromHexString(collection._id);
 	 }	
-	
+
+	 if(collection._created_at) {
+	 	collection._created_at = new Date(collection._created_at);
+	 }
+
+	 if(collection._updated_at) {
+	 	collection._updated_at = new Date(collection._updated_at);	
+	 }
+	 
+	 // winston.info("collection object = " + collection);
+
 	db.collection(collectionName).update({"_id":collection._id}, collection, {upsert: true}, function(error, result){
     
     if(error) { 
